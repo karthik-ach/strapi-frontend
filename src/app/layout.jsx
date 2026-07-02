@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
