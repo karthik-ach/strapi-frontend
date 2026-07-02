@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #edeae1;
+  --ink: #1c1b17;
+  --graphite: #6e6a5e;
+  --redline: #c5361f;
+  --bluepencil: #2e4a6b;
+  --kraft: #d8cba9;
+  --darkroom: #17181b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-redline: var(--redline);
+  --color-bluepencil: var(--bluepencil);
+  --color-kraft: var(--kraft);
+  --color-darkroom: var(--darkroom);
+
+  --font-display: var(--font-bricolage);
+  --font-body: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--redline);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--redline);
+  color: var(--paper);
+}
+
+/* Registration marks — decorative print-proof crosshairs */
+.registration-mark {
+  color: var(--graphite);
+  opacity: 0.45;
+}
+
+/* Stamp button — rubber-stamped call to action */
+.stamp-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border: 2px solid var(--redline);
+  border-radius: 999px;
+  color: var(--redline);
+  font-family: var(--font-plex-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-1.5deg);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.stamp-button:hover {
+  transform: rotate(-1.5deg) scale(1.04);
+  background-color: var(--redline);
+  color: var(--paper);
+}
+
+.stamp-button--invert {
+  border-color: var(--paper);
+  color: var(--paper);
+}
+
+.stamp-button--invert:hover {
+  background-color: var(--paper);
+  color: var(--darkroom);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .stamp-button,
+  .stamp-button:hover {
+    transform: none;
+  }
+}
+
+/* Annotation — hand-drawn redline/blue-pencil marks over text */
+.annotation {
+  position: relative;
+  display: inline-block;
+}
+
+.annotation--circle .annotation__content {
+  padding: 0.05em 0.35em;
+}
+
+.annotation__mark {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.annotation--circle .annotation__mark,
+.annotation--underline .annotation__mark {
+  inset: -0.3em -0.4em;
+  width: calc(100% + 0.8em);
+  height: calc(100% + 0.6em);
+}
+
+.annotation--strike .annotation__mark {
+  inset: 0 -0.15em;
+  width: calc(100% + 0.3em);
+  height: 100%;
+}
+
+.annotation__mark path {
+  stroke: var(--redline);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.annotation[data-color="bluepencil"] .annotation__mark path {
+  stroke: var(--bluepencil);
+}
+
+.annotation__mark.is-visible path {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annotation__mark path {
+    transition: none;
+    stroke-dashoffset: 0;
+  }
 }
