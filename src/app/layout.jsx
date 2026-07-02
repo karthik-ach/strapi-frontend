@@ -1,4 +1,6 @@
 import { Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import Nav from "@/app/components/Nav";
+import Footer from "@/app/components/Footer";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -31,7 +33,11 @@ export default function RootLayout({ children }) {
       className={`${bricolage.variable} ${plexSans.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        {children}
+        <div className="flex min-h-screen flex-col bg-paper text-ink">
+          <Nav />
+          <main className="flex flex-1 flex-col">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

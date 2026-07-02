@@ -1,6 +1,27 @@
+import { apiFetch } from "@/app/services/apiFetch";
 import RegistrationMark from "./RegistrationMark";
 
-export default function CTA() {
+const FALLBACK_CTA = {
+  eyebrow: "Get in touch",
+  heading: "Got a brief? Good — let's see it.",
+  email: "hello@manyhands.studio",
+};
+
+function normalizeCta(res) {
+  const cta = res?.data ?? res ?? null;
+  if (!cta || Object.keys(cta).length === 0) return FALLBACK_CTA;
+
+  return {
+    eyebrow: cta.eyebrow ?? FALLBACK_CTA.eyebrow,
+    heading: cta.heading ?? FALLBACK_CTA.heading,
+    email: cta.email ?? FALLBACK_CTA.email,
+  };
+}
+
+export default async function CTA() {
+  const res = await apiFetch("home-page/cta");
+  const cta = normalizeCta(res);
+
   return (
     <section
       id="contact"
@@ -11,14 +32,14 @@ export default function CTA() {
 
       <div className="mx-auto flex max-w-4xl flex-col gap-8">
         <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-paper/50">
-          Get in touch
+          {cta.eyebrow}
         </span>
         <h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
-          Got a brief? Good — let&rsquo;s see it.
+          {cta.heading}
         </h2>
         <div>
-          <a href="mailto:hello@manyhands.studio" className="stamp-button stamp-button--invert">
-            hello@manyhands.studio →
+          <a href={`mailto:${cta.email}`} className="stamp-button stamp-button--invert">
+            {cta.email} →
           </a>
         </div>
       </div>

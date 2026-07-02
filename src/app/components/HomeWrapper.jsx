@@ -11,6 +11,13 @@ const FALLBACK_TEAM = [
   { name: "Theo Lindqvist", role: "Copywriter", note: "Reads headlines out loud, always." },
 ];
 
+const FALLBACK_TEAM_HEADING = {
+  teamEyebrowLabel: "The hands",
+  teamHeadingPrefix: "Who",
+  teamHeadingHighlight: "actually",
+  teamHeadingSuffix: "does the work.",
+};
+
 function normalizeTeam(res) {
   const raw = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : null;
   if (!raw || raw.length === 0) return FALLBACK_TEAM;
@@ -25,20 +32,39 @@ function normalizeTeam(res) {
   });
 }
 
+function normalizeTeamHeading(res) {
+  const item = res?.data ?? res ?? {};
+
+  return {
+    teamEyebrowLabel: item.teamEyebrowLabel ?? FALLBACK_TEAM_HEADING.teamEyebrowLabel,
+    teamHeadingPrefix: item.teamHeadingPrefix ?? FALLBACK_TEAM_HEADING.teamHeadingPrefix,
+    teamHeadingHighlight: item.teamHeadingHighlight ?? FALLBACK_TEAM_HEADING.teamHeadingHighlight,
+    teamHeadingSuffix: item.teamHeadingSuffix ?? FALLBACK_TEAM_HEADING.teamHeadingSuffix,
+  };
+}
+
 export default async function HomeWrapper() {
-  const res = await apiFetch("about-us/team");
-  const team = normalizeTeam(res);
+  const [teamRes, teamHeadingRes] = await Promise.all([
+    apiFetch("about-us/team"),
+    apiFetch("home-page/team-heading"),
+  ]);
+  const team = normalizeTeam(teamRes);
+  const { teamEyebrowLabel, teamHeadingPrefix, teamHeadingHighlight, teamHeadingSuffix } =
+    normalizeTeamHeading(teamHeadingRes);
 
   return (
     <section id="team" className="relative border-b border-ink/10 px-6 py-20 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 flex flex-col gap-3">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-graphite">
-            The hands — {team.length} on the sheet
+            {teamEyebrowLabel} — {team.length} on the sheet
           </span>
           <h2 className="font-display text-4xl font-semibold text-ink sm:text-5xl">
-            Who <Annotation variant="underline" color="bluepencil">actually</Annotation> does
-            the work.
+            {teamHeadingPrefix}{" "}
+            <Annotation variant="underline" color="bluepencil">
+              {teamHeadingHighlight}
+            </Annotation>{" "}
+            {teamHeadingSuffix}
           </h2>
         </div>
 
