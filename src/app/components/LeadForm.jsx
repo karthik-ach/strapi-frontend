@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitLead } from "@/app/actions/leads";
 
 const INITIAL_FORM = { name: "", email: "", number: "" };
 
@@ -19,24 +20,16 @@ export default function LeadForm() {
     setStatus("submitting");
     setErrorMessage("");
 
-    try {
-      const response = await fetch("/api/wrapper", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: "leads", data: form }),
-      });
+    const result = await submitLead(form);
 
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body?.error || "Something went wrong. Please try again.");
-      }
-
-      setStatus("success");
-      setForm(INITIAL_FORM);
-    } catch (error) {
+    if (!result.ok) {
       setStatus("error");
-      setErrorMessage(error.message || "Something went wrong. Please try again.");
+      setErrorMessage(result.error || "Something went wrong. Please try again.");
+      return;
     }
+
+    setStatus("success");
+    setForm(INITIAL_FORM);
   };
 
   if (status === "success") {
