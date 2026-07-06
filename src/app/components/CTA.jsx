@@ -1,5 +1,6 @@
 import { apiFetch } from "@/app/services/apiFetch";
 import RegistrationMark from "./RegistrationMark";
+import LeadForm from "./LeadForm";
 
 const FALLBACK_CTA = {
   eyebrow: "Get in touch",
@@ -37,9 +38,13 @@ export default async function CTA() {
         <h2 className="max-w-2xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
           {cta.heading}
         </h2>
-        <div>
-          <a href={`mailto:${cta.email}`} className="stamp-button stamp-button--invert">
-            {cta.email} →
+        <div className="flex flex-col gap-6">
+          <LeadForm />
+          <a
+            href={`mailto:${cta.email}`}
+            className="font-mono text-xs uppercase tracking-widest text-paper/60 underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper"
+          >
+            or email {cta.email} →
           </a>
         </div>
       </div>
